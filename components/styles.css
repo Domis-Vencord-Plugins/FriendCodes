@@ -1,0 +1,27 @@
+[id="friend-codes"] {
+  margin-left: 0;
+  font-size: 13px;
+}
+
+.vc-friend-codes-card {
+  padding: 20px;
+  margin-bottom: var(--custom-margin-margin-small);
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
+  border-color: var(--background-tertiary);
+  background-color: var(--background-secondary);
+
+  .vc-friend-codes-card-title span {
+    color: var(--header-secondary);
+    font-family: var(--font-primary);
+    font-size: 14px;
+    font-weight: 400;
+  } 
+}
+
+.vc-friend-codes-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
