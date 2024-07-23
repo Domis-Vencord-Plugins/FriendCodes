@@ -1,10 +1,9 @@
 import { Button, Clipboard, Flex, Forms, Parser, Text, useEffect, useState } from "@webpack/common";
-import { findByCodeLazy, findByPropsLazy } from "@webpack";
+import { findByPropsLazy } from "@webpack";
 import { FriendInvite } from "../types";
 import "./styles.css";
 
 const FormStyles = findByPropsLazy("header", "title");
-const SmallHeader = findByCodeLazy("let{title:t,id:n}=e;");
 const { createFriendInvite, getAllFriendInvites, revokeFriendInvites } = findByPropsLazy("createFriendInvite");
 
 function CopyButton({ copyText, copiedText, onClick }) {
@@ -76,10 +75,7 @@ export default function FriendCodesPanel() {
                 style={{ marginBottom: "16px" }}
                 justify={Flex.Justify.BETWEEN}
             >
-                <SmallHeader
-                    id="friend-codes"
-                    title={`Friend Codes - ${invites.length}`}
-                />
+                <h2 className="vc-friend-codes-info-header">{`Friend Codes - ${invites.length}`}</h2>
                 <Flex justify={Flex.Justify.END}>
                     <Button
                         color={Button.Colors.GREEN}

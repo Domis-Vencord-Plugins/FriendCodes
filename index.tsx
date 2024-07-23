@@ -7,7 +7,7 @@ export default definePlugin({
     authors: [{ name: "domi.btnr", id: 354191516979429376n }],
     patches: [
         {
-            find: "_.emptyState,children:(0,i.jsx)(c.Z,{type:d.pJs.ADD_FRIEND})",
+            find: ".Messages.ADD_FRIEND}),(",
             replacement: {
                 match: /\.Fragment[^]*?children:\[[^]*?}\)/,
                 replace: "$&,$self.FriendCodesPanel"
