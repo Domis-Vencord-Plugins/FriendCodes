@@ -3,7 +3,7 @@ import { findByPropsLazy } from "@webpack";
 import { FriendInvite } from "../types";
 import "./styles.css";
 
-const FormStyles = findByPropsLazy("header", "title");
+const FormStyles = findByPropsLazy("header", "title", "emptyState");
 const { createFriendInvite, getAllFriendInvites, revokeFriendInvites } = findByPropsLazy("createFriendInvite");
 
 function CopyButton({ copyText, copiedText, onClick }) {
