@@ -32,7 +32,7 @@ function FriendInviteCard({ invite }: { invite: FriendInvite }) {
         <div className="vc-friend-codes-card">
             <Flex justify={Flex.Justify.START}>
                 <div className="vc-friend-codes-card-title">
-                    <Forms.FormTitle tag="h4">
+                    <Forms.FormTitle tag="h4" style={{ textTransform: "none" }}>
                         {invite.code}
                     </Forms.FormTitle>
                     <span>
