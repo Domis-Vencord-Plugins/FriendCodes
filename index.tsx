@@ -1,4 +1,11 @@
+/*
+ * Vencord, a Discord client mod
+ * Copyright (c) 2024 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 import definePlugin from "@utils/types";
+
 import FriendCodesPanel from "./components/FriendCodesPanel";
 
 export default definePlugin({
@@ -7,7 +14,7 @@ export default definePlugin({
     authors: [{ name: "domi.btnr", id: 354191516979429376n }],
     patches: [
         {
-            find: ".Messages.ADD_FRIEND}),(",
+            find: "#{intl::ADD_FRIEND})}),(",
             replacement: {
                 match: /\.Fragment[^]*?children:\[[^]*?}\)/,
                 replace: "$&,$self.FriendCodesPanel"
