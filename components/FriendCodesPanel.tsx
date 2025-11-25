@@ -6,9 +6,13 @@
 
 import "./styles.css";
 
+import { BaseText } from "@components/BaseText";
+import { Button, TextButton } from "@components/Button";
+import { Flex } from "@components/Flex";
+import { Heading } from "@components/Heading";
 import { copyToClipboard } from "@utils/clipboard";
 import { findByPropsLazy } from "@webpack";
-import { Button, Flex, Forms, Parser, Text, useEffect, useState } from "@webpack/common";
+import { Parser, useEffect, useState } from "@webpack/common";
 
 import { FriendInvite } from "../types";
 
@@ -27,9 +31,8 @@ function CopyButton({ copyText, copiedText, onClick }) {
     return (
         <Button
             onClick={handleButtonClick}
-            color={copied ? Button.Colors.GREEN : Button.Colors.BRAND}
-            size={Button.Sizes.SMALL}
-            look={Button.Looks.FILLED}
+            variant={copied ? "positive" : "primary"}
+            size="small"
         >
             {copied ? copiedText : copyText}
         </Button>
@@ -39,16 +42,16 @@ function CopyButton({ copyText, copiedText, onClick }) {
 function FriendInviteCard({ invite }: { invite: FriendInvite }) {
     return (
         <div className="vc-friend-codes-card">
-            <Flex justify={Flex.Justify.START}>
+            <Flex justifyContent="start">
                 <div className="vc-friend-codes-card-title">
-                    <Forms.FormTitle tag="h4" style={{ textTransform: "none" }}>
+                    <Heading tag="h4" style={{ textTransform: "none" }}>
                         {invite.code}
-                    </Forms.FormTitle>
+                    </Heading>
                     <span>
                         Expires {Parser.parse(`<t:${new Date(invite.expires_at).getTime() / 1000}:R>`)} • {invite.uses}/{invite.max_uses} uses
                     </span>
                 </div>
-                <Flex justify={Flex.Justify.END}>
+                <Flex justifyContent="end">
                     <CopyButton
                         copyText="Copy"
                         copiedText="Copied!"
@@ -72,54 +75,54 @@ export default function FriendCodesPanel() {
     }, []);
 
     return (
-        <header className={FormStyles.header}>
-            <Forms.FormTitle
+        <header className={FormStyles.header} style={{ display: "block" }}>
+            <Heading
                 tag="h2"
                 className={FormStyles.title}
             >
                 Your Friend Codes
-            </Forms.FormTitle>
+            </Heading>
 
             <Flex
                 style={{ marginBottom: "16px" }}
-                justify={Flex.Justify.BETWEEN}
+                justifyContent="space-between"
             >
                 <h2 className="vc-friend-codes-info-header">{`Friend Codes - ${invites.length}`}</h2>
-                <Flex justify={Flex.Justify.END}>
+                <Flex justifyContent="end">
                     <Button
-                        color={Button.Colors.GREEN}
-                        look={Button.Looks.FILLED}
+                        variant="positive"
                         onClick={() => createFriendInvite().then((invite: FriendInvite) => setInvites([...invites, invite]))}
                     >
                         Create Friend Code
                     </Button>
-                    <Button
+                    <TextButton
                         style={{ marginLeft: "8px" }}
-                        color={Button.Colors.RED}
-                        look={Button.Looks.OUTLINED}
+                        variant="danger"
                         disabled={!invites.length}
                         onClick={() => revokeFriendInvites().then(setInvites([]))}
                     >
                         Revoke all Friend Codes
-                    </Button>
+                    </TextButton>
                 </Flex>
             </Flex>
 
             {
                 loading ?
-                    <Text
-                        variant="heading-md/semibold"
+                    <BaseText
+                        size="md"
+                        weight="semibold"
                         className="vc-friend-codes-text"
                     >
                         Loading...
-                    </Text> :
+                    </BaseText> :
                     invites.length === 0 ?
-                        <Text
-                            variant="heading-md/semibold"
+                        <BaseText
+                            size="md"
+                            weight="semibold"
                             className="vc-friend-codes-text"
                         >
                             You don't have any friend codes yet
-                        </Text> :
+                        </BaseText> :
                         <div>
                             {invites.map(invite => (
                                 <FriendInviteCard key={invite.code} invite={invite} />
