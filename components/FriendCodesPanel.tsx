@@ -42,7 +42,7 @@ function CopyButton({ copyText, copiedText, onClick }) {
 function FriendInviteCard({ invite }: { invite: FriendInvite }) {
     return (
         <div className="vc-friend-codes-card">
-            <Flex justifyContent="start">
+            <Flex justifyContent="space-between">
                 <div className="vc-friend-codes-card-title">
                     <Heading tag="h4" style={{ textTransform: "none" }}>
                         {invite.code}
@@ -51,13 +51,11 @@ function FriendInviteCard({ invite }: { invite: FriendInvite }) {
                         Expires {Parser.parse(`<t:${new Date(invite.expires_at).getTime() / 1000}:R>`)} • {invite.uses}/{invite.max_uses} uses
                     </span>
                 </div>
-                <Flex justifyContent="end">
-                    <CopyButton
-                        copyText="Copy"
-                        copiedText="Copied!"
-                        onClick={() => copyToClipboard(`https://discord.gg/${invite.code}`)}
-                    />
-                </Flex>
+                <CopyButton
+                    copyText="Copy"
+                    copiedText="Copied!"
+                    onClick={() => copyToClipboard(`https://discord.gg/${invite.code}`)}
+                />
             </Flex>
         </div>
     );
@@ -75,7 +73,7 @@ export default function FriendCodesPanel() {
     }, []);
 
     return (
-        <header className={FormStyles.header} style={{ display: "block" }}>
+        <header className={FormStyles.header} style={{ display: "block", padding: "20px 30px" }}>
             <Heading
                 tag="h2"
                 className={FormStyles.title}
