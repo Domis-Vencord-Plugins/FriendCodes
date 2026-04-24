@@ -121,7 +121,7 @@ export default function FriendCodesPanel() {
                         >
                             You don't have any friend codes yet
                         </BaseText> :
-                        <div>
+                        <div style={{ maxHeight: "40vh", overflowY: "auto" }}>
                             {invites.map(invite => (
                                 <FriendInviteCard key={invite.code} invite={invite} />
                             ))}

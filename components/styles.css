@@ -4,12 +4,13 @@
   border-width: 1px;
   border-style: solid;
   border-radius: 5px;
-  border-color: var(--background-tertiary);
-  background-color: var(--background-secondary);
+  border-color: var(--background-base-low);
+  background-color: var(--background-base-low);
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, .14);
 }
 
 .vc-friend-codes-card-title span {
-  color: var(--header-secondary);
+  color: var(--text-default);
   font-family: var(--font-primary);
   font-size: 14px;
   font-weight: 400;
@@ -18,7 +19,7 @@
 .vc-friend-codes-info-header {
   margin-top: 16px;
   margin-bottom: 8px;
-  color: var(--header-secondary);
+  color: var(--text-default);
   text-transform: uppercase;
   font-size: 12px;
   line-height: 16px;
