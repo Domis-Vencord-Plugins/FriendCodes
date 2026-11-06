@@ -6,6 +6,7 @@
 
 import definePlugin from "@utils/types";
 
+import commands from "./commands";
 import FriendCodesPanel from "./components/FriendCodesPanel";
 
 export default definePlugin({
@@ -16,13 +17,12 @@ export default definePlugin({
         {
             find: "#{intl::ADD_FRIEND})}),(",
             replacement: {
-                match: /\.Fragment,\{children:\[(\(0,\i\.jsx\)\(\i,\{\}\)),(\(0,\i\.jsx\)\(\i,\{\}\))\]/,
-                replace: ".Fragment,{children:[$1,$self.FriendCodesPanel,$2]"
+                match: /#{intl::ADD_FRIEND}\)\}\),.{0,150}?\.Fragment,\{children:\[\(0,\i\.jsx\)\(\i,\{\}\),/,
+                replace: "$&$self.renderPanel(),"
             }
         }
     ],
+    commands,
 
-    get FriendCodesPanel() {
-        return <FriendCodesPanel />;
-    }
+    renderPanel: () => <FriendCodesPanel />
 });

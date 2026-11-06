@@ -1,0 +1,53 @@
+.vc-friend-codes-panel {
+    padding: 20px 30px;
+    border-bottom: 1px solid var(--border-subtle);
+
+    .vc-friend-codes-panel-header {
+        .vc-friend-codes-panel-heading {
+            flex: 1 1 280px;
+            min-width: 0;
+
+            .vc-friend-codes-panel-title {
+                color: var(--text-strong);
+            }
+
+            .vc-friend-codes-panel-description {
+                margin-top: 8px;
+            }
+        }
+
+        .vc-friend-codes-panel-actions {
+            flex: 0 0 auto;
+        }
+    }
+
+    .vc-friend-codes-panel-count {
+        margin: 20px 0 8px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+    }
+
+    .vc-friend-codes-panel-list {
+        max-height: 40vh;
+        overflow-y: auto;
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        background-color: var(--background-base-lower);
+        scrollbar-width: thin;
+        scrollbar-color: var(--scrollbar-thin-thumb) var(--scrollbar-thin-track);
+
+        .vc-friend-codes-panel-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 20px 16px;
+            text-align: center;
+
+            .vc-friend-codes-panel-muted {
+                color: var(--text-muted);
+            }
+        }
+    }
+}

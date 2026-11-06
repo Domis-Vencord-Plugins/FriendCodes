@@ -1,0 +1,16 @@
+.vc-friend-codes-row {
+    padding: 12px 16px;
+
+    & + & {
+        border-top: 1px solid var(--border-subtle);
+    }
+
+    .vc-friend-codes-row-code {
+        color: var(--text-strong);
+    }
+
+    .vc-friend-codes-row-details {
+        margin-top: 2px;
+        color: var(--text-muted);
+    }
+}

@@ -4,129 +4,119 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import "./styles.css";
+import "./FriendCodesPanel.css";
 
-import { BaseText } from "@components/BaseText";
-import { Button, TextButton } from "@components/Button";
+import { Button } from "@components/Button";
+import ErrorBoundary from "@components/ErrorBoundary";
 import { Flex } from "@components/Flex";
-import { Heading } from "@components/Heading";
-import { copyToClipboard } from "@utils/clipboard";
-import { findByPropsLazy, findCssClassesLazy } from "@webpack";
-import { Parser, useEffect, useState } from "@webpack/common";
+import { Text } from "@components/Text";
+import { classNameFactory } from "@utils/css";
+import { showToast, useEffect, useState, useStateFromStores } from "@webpack/common";
 
-import { FriendInvite } from "../types";
+import FriendInvitesStore, { fetchInvites } from "../modules/store";
+import { Errors, logger } from "../modules/utils";
+import { InviteModule } from "../modules/webpack";
+import FriendCodeRow from "./FriendCodeRow";
 
-const FormStyles = findCssClassesLazy("header", "title", "emptyState");
-const { createFriendInvite, getAllFriendInvites, revokeFriendInvites } = findByPropsLazy("createFriendInvite");
+const cl = classNameFactory("vc-friend-codes-");
 
-function CopyButton({ copyText, copiedText, onClick }) {
-    const [copied, setCopied] = useState(false);
+function PanelContent() {
+    const invites = useStateFromStores([FriendInvitesStore], () => FriendInvitesStore.getInvites());
+    const loaded = useStateFromStores([FriendInvitesStore], () => FriendInvitesStore.hasLoaded());
+    const failed = useStateFromStores([FriendInvitesStore], () => FriendInvitesStore.hasFailed());
 
-    const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-        setCopied(true);
-        setTimeout(() => setCopied(false), 1000);
-        onClick(e);
+    if (!loaded && failed) {
+        return (
+            <div className={cl("panel-empty")}>
+                <Text size="sm" className={cl("panel-muted")}>Couldn't load your friend codes.</Text>
+                <Button size="small" onClick={fetchInvites}>Try Again</Button>
+            </div>
+        );
+    }
+
+    if (!loaded) {
+        return (
+            <div className={cl("panel-empty")}>
+                <Text size="sm" className={cl("panel-muted")}>Loading...</Text>
+            </div>
+        );
+    }
+
+    if (!invites.length) {
+        return (
+            <div className={cl("panel-empty")}>
+                <Text size="sm" className={cl("panel-muted")}>You don't have any friend codes yet.</Text>
+            </div>
+        );
+    }
+
+    return invites.map(invite => <FriendCodeRow key={invite.code} invite={invite} />);
+}
+
+function PanelBody() {
+    const count = useStateFromStores([FriendInvitesStore], () => FriendInvitesStore.getInvites().length);
+    const [pending, setPending] = useState(false);
+
+    useEffect(() => {
+        fetchInvites();
+    }, []);
+
+    const runRequest = (request: () => Promise<unknown>, error: string) => {
+        setPending(true);
+        request()
+            .catch(err => {
+                logger.error(error, err);
+                showToast({ text: error, variant: "critical" });
+            })
+            .finally(() => setPending(false));
     };
 
     return (
-        <Button
-            onClick={handleButtonClick}
-            variant={copied ? "positive" : "primary"}
-            size="small"
-        >
-            {copied ? copiedText : copyText}
-        </Button>
-    );
-}
-
-function FriendInviteCard({ invite }: { invite: FriendInvite }) {
-    return (
-        <div className="vc-friend-codes-card">
-            <Flex justifyContent="space-between">
-                <div className="vc-friend-codes-card-title">
-                    <Heading tag="h4" style={{ textTransform: "none" }}>
-                        {invite.code}
-                    </Heading>
-                    <span>
-                        Expires {Parser.parse(`<t:${new Date(invite.expires_at).getTime() / 1000}:R>`)} • {invite.uses}/{invite.max_uses} uses
-                    </span>
+        <>
+            <Flex className={cl("panel-header")} alignItems="flex-start" justifyContent="space-between" flexWrap="wrap" gap="12px 16px">
+                <div className={cl("panel-heading")}>
+                    <Text tag="h2" size="lg" weight="semibold" className={cl("panel-title")}>
+                        Your Friend Codes
+                    </Text>
+                    <Text size="sm" className={cl("panel-description")}>
+                        Share a friend code so others can add you without knowing your username.
+                    </Text>
                 </div>
-                <CopyButton
-                    copyText="Copy"
-                    copiedText="Copied!"
-                    onClick={() => copyToClipboard(`https://discord.gg/${invite.code}`)}
-                />
+                <Flex className={cl("panel-actions")} justifyContent="flex-end" gap="8px">
+                    <Button
+                        variant="dangerSecondary"
+                        size="small"
+                        disabled={pending || !count}
+                        onClick={() => runRequest(InviteModule.revokeFriendInvites, Errors.revoke)}
+                    >
+                        Revoke All
+                    </Button>
+                    <Button
+                        size="small"
+                        disabled={pending}
+                        onClick={() => runRequest(InviteModule.createFriendInvite, Errors.create)}
+                    >
+                        Create Friend Code
+                    </Button>
+                </Flex>
             </Flex>
-        </div>
+
+            <Text tag="h3" size="xs" weight="semibold" className={cl("panel-count")}>
+                Friend Codes — {count}
+            </Text>
+            <div className={cl("panel-list")}>
+                <PanelContent />
+            </div>
+        </>
     );
 }
 
 export default function FriendCodesPanel() {
-    const [invites, setInvites] = useState<FriendInvite[]>([]);
-    const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        setLoading(true);
-        getAllFriendInvites()
-            .then(setInvites)
-            .then(() => setLoading(false));
-    }, []);
-
     return (
-        <header className={FormStyles.header} style={{ display: "block", padding: "20px 30px" }}>
-            <Heading
-                tag="h2"
-                className={FormStyles.title}
-            >
-                Your Friend Codes
-            </Heading>
-
-            <Flex
-                style={{ marginBottom: "16px" }}
-                justifyContent="space-between"
-            >
-                <h2 className="vc-friend-codes-info-header">{`Friend Codes - ${invites.length}`}</h2>
-                <Flex justifyContent="end">
-                    <Button
-                        variant="positive"
-                        onClick={() => createFriendInvite().then((invite: FriendInvite) => setInvites([...invites, invite]))}
-                    >
-                        Create Friend Code
-                    </Button>
-                    <TextButton
-                        style={{ marginLeft: "8px" }}
-                        variant="danger"
-                        disabled={!invites.length}
-                        onClick={() => revokeFriendInvites().then(setInvites([]))}
-                    >
-                        Revoke all Friend Codes
-                    </TextButton>
-                </Flex>
-            </Flex>
-
-            {
-                loading ?
-                    <BaseText
-                        size="md"
-                        weight="semibold"
-                        className="vc-friend-codes-text"
-                    >
-                        Loading...
-                    </BaseText> :
-                    invites.length === 0 ?
-                        <BaseText
-                            size="md"
-                            weight="semibold"
-                            className="vc-friend-codes-text"
-                        >
-                            You don't have any friend codes yet
-                        </BaseText> :
-                        <div style={{ maxHeight: "40vh", overflowY: "auto" }}>
-                            {invites.map(invite => (
-                                <FriendInviteCard key={invite.code} invite={invite} />
-                            ))}
-                        </div>
-            }
+        <header className={cl("panel")}>
+            <ErrorBoundary message="Failed to render your friend codes.">
+                <PanelBody />
+            </ErrorBoundary>
         </header>
     );
 }
